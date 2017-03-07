@@ -1,0 +1,22 @@
+---
+title: "IODS-Course Final Assignement"
+author: "Janne Kirjasniemi"
+date: "March 8, 2017"
+email: "janne.kirjasniemi@helsinki.fi"
+output:
+  html_document:
+    theme: cosmo
+    toc: true
+    toc_depth: 2
+    fig_caption: true
+    fig_width: 6
+    fig_height: 4
+    code_folding: hide
+---
+
+***
+  
+```{r child = "final1.Rmd"}
+```
+  
+***

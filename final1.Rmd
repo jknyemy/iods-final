@@ -1,0 +1,15 @@
+---
+title: "final1"
+output: html_document
+---
+
+```{r setup1, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Eka osio
+
+```{r sala}
+rando <- matrix(rnorm(9), 3)
+rando
+```
