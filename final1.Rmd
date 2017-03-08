@@ -1,15 +1,67 @@
 ---
-title: "final1"
+title: "Hypothesis and dataset"
 output: html_document
 ---
 
 ```{r setup1, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE)
+library(ggplot2)
+library(MASS)
+library(corrplot)
+library(GGally)
+library(FactoMineR)
+library(dplyr)
+hdi.aid <- read.csv2("hdi_aid.csv", stringsAsFactors = FALSE)
 ```
 
-## Eka osio
+# Hypothesis
 
-```{r sala}
-rando <- matrix(rnorm(9), 3)
-rando
+## Dataset and variables
+
+For this analysis I have combined data from UN Human Development Report's Human Development Index(HDI) dataset with data from Gapminder's datasets, specifically the one's containing the mean fertility of women in different countries, the rate of deaths in children under five years old per 1000 live births and foreign aid received as a proportion of Gross National Income(GNI), which has been provided to Gapminder by World Bank.
+
+These datasets can be accessed from:
+http://hdr.undp.org/en/data
+for Human Development Index data and for Gapminder:
+https://www.gapminder.org/data/
+
+All in all, this dataset has 159 observation of 17 variables, where the observations are per country, where the data was available from the sources used. In the case of HDI data, the data include averages for education, GNI and HDI value, which is a geometrical mean of the different variables used in the making of the HDI report. There are also many variables concerning the rate of female and male participation in education and labour force or GNI(these are rates of female rate or value divided by male rate or value) as well as variables for maternal mortality and adolescent pregnancies. All of these are for year 2014. From Gapminder are included mortality of children under 5 years old per 1000 live births for the year 2014 and the fertility, that is birthrate of women, for the year 2014.
+
+The last dat from World Bank is foreign aid received by country as a proportion of their GNI. This is presented as a mean of proportions from the year 1984 to 2004, altogether 21 years. THis has been done to get a number for foreign aid received some time before the time in the other data, which is 2014. Also included is a variable for the amount of years the mean was calculated from, to get an idea of the consistency of aid to the country in question. The basic numbers for the countries that received foreign aid are:
+
+```{r means foraid}
+summary(hdi.aid$mean04[!is.na(hdi.aid$mean04)])
+summary(hdi.aid$mean.length[hdi.aid$mean.length!=0])
+length(hdi.aid$mean.length[hdi.aid$mean.length!=0])
+```
+
+Here the upper values are for the aid received and the lower for the amount of years from the 21 year period that there was a value to be had from the data. As one can see, 75% of the observed values for the years of aid received is 16 or more, so the aid has been quite consistent. The lowest value is the number of countries from the observations that received aid during this period.
+
+## Hypothesis or purpose
+
+The purpose of this analysis is to compare the variables of the dataset to some variables of interest. The first of these variables is the HDI value and the fertility of women, summaries of which are here:
+
+```{r summary fert}
+summary(hdi.aid$fert)
+summary(hdi.aid$HDI)
+```
+
+The factors in question will first be analysed through principal component analysis(PCA) after they have been standardized through scaling and based on these observations we will examine the variables of interest against other variables that appear from the PCA, through logistic regression.
+
+While the rate of foreign aid is a variable in the dataset and it is interesting to see how it affects the other variables, there are some significant problems with it which limit its use here to make any assumptions. While one might hypothesize that a larger amount of aid should lead to greater results and that if there is no correlation or even a negative correlation, one must conclude that foreign aid is ineffective. But the number in question is just the gross amount, it does not take into account how this money was used, what is the amount of corruption in the target country or other circumstances such as war and it necessarily does not include the resources used by NGO organisations. So while its use might provide some interesting insight, the conclusions with this data and its use should be treated with great care.
+
+## Basic characteristics of the dataset
+
+Here is a summary of the basic statistics of the dataset:
+
+```{r summaries}
+summary(hdi.aid[2:17])
+```
+
+As one can see, some variables contain a high number of NA values, but the biggest amount, in mean04, which refers to the mean proportion of foreign aid, refers to countries which did not receive foreign aid at all. In other cases, it can affect the outcome but not too much, especially for current purposes, which is to form some general idea of correlations.
+
+Here are correlations of the variables:
+
+```{r correlplot}
+corrplot(cor(hdi.aid[3:17]), type="upper")
 ```

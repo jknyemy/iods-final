@@ -1,5 +1,5 @@
 ---
-title: "IODS-Course Final Assignement"
+title: "IODS-Course Final Assignment"
 author: "Janne Kirjasniemi"
 date: "March 8, 2017"
 email: "janne.kirjasniemi@helsinki.fi"

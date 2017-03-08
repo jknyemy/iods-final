@@ -1,0 +1,14 @@
+---
+title: "Principal Component Analysis"
+author: "Janne Kirjasniemi"
+date: "8 maaliskuuta 2017"
+output: html_document
+---
+
+```{r setup2, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE)
+str(hdi.aid)
+rownames(hdi.aid) <- hdi.aid$Country
+hdi.aid <- select(hdi.aid, -Country)
+```
+

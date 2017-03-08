@@ -121,6 +121,7 @@ str(child.mort)
 
 hdi.aid5 <- inner_join(hdi.aid4, child.mort, by = "Country")
 View(hdi.aid5)
+
 #Saving the dataset
 
 write.csv2(hdi.aid5, "hdi_aid.csv")
