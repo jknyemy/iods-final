@@ -1,7 +1,8 @@
 ---
 title: "IODS-Course Final Assignment"
-author: "Janne Kirjasniemi"
-subtitle: "janne.kirjasniemi@gmail.com"
+author: 
+- "Janne Kirjasniemi"
+- "janne.kirjasniemi@gmail.com"
 date: "March 8, 2017"
 output:
   html_document:
