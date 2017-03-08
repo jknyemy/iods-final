@@ -1,0 +1,78 @@
+---
+title: "Logistic regression"
+author: "Janne Kirjasniemi"
+date: "9 maaliskuuta 2017"
+output: html_document
+---
+
+```{r setup3, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE)
+library(ggplot2)
+library(MASS)
+library(corrplot)
+library(GGally)
+library(FactoMineR)
+library(dplyr)
+hdi.aid <- read.csv2("hdi_aid.csv", stringsAsFactors = FALSE)
+```
+
+## Linear discrimination analysis
+
+Since the fertility variable is situated far away from most of the others, it would still be intersting, whether we can make any predictions from the data.
+
+```{r}
+#Removing missing value rows and scaling the dataset.
+comp <- complete.cases(hdi.aid)
+hdi.aid2 <- hdi.aid
+hdi.aid2$comp <- comp
+hdi.aid2 <- filter(hdi.aid2, comp==TRUE)
+hdi.aid2 <- dplyr::select(hdi.aid2, -comp)
+names <- hdi.aid2$Country
+hdi.aid2 <- dplyr::select(hdi.aid2, -Country)
+hdi_sca <- scale(hdi.aid2)
+as.data.frame(hdi_sca)
+#Evolving the Fert variable into a categorical variable by quantiles
+scaled_fert <- hdi_sca$Fert#En tiedä mitä tapahtuu!!
+bins <- quantile(scaled_fert)
+fert_cat <- cut(scaled_crim, breaks = bins, include.lowest = TRUE, label = c("low", "med_low", "med_high", "high"))
+hdi_sca$Fert <- fert_cat
+#Producing a train set and a test set
+n <- nrow(hdi.aid2)
+ind <- sample(n,  size = n * 0.8)
+train <- hdi_sca[ind,]
+test <- hdi_sca[-ind,]
+#Saving the crim variable from test and then removing it from it.
+correct_classes <- test$crim
+test <- dplyr::select(test, -crim)
+```
+
+#Producing a train set and a test set
+n <- nrow(Boston)
+ind <- sample(n,  size = n * 0.8)
+train <- boston_scaled[ind,]
+test <- boston_scaled[-ind,]
+#Saving the crim variable from test and then removing it from it.
+correct_classes <- test$crim
+test <- dplyr::select(test, -crim)
+```
+
+Using linear discriminant analysis on the scaled data with crime rate as a target variable against the other variables and making a biplot of the results gives us the following:
+```{r}
+#Fitting the linear discriminant analysis
+lda.fit <- lda(crim ~ ., data = train)
+#A function for arrows for the biplot
+lda.arrows <- function(x, myscale = 1, arrow_heads = 0.1, color = "orange", tex = 0.75, choices = c(1,2)){
+  heads <- coef(x)
+  arrows(x0 = 0, y0 = 0, 
+         x1 = myscale * heads[,choices[1]], 
+         y1 = myscale * heads[,choices[2]], col=color, length = arrow_heads)
+  text(myscale * heads[,choices], labels = row.names(heads), 
+       cex = tex, col=color, pos=3)
+}
+#A numeric vector to paint the picture by
+classes <- as.numeric(train$crim)
+#The biplot with arrows included
+plot(lda.fit, dimen = 2, col = classes, pch=classes)
+lda.arrows(lda.fit, myscale = 2)
+```
+

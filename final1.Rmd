@@ -46,7 +46,7 @@ summary(hdi.aid$Fert)
 summary(hdi.aid$HDI)
 ```
 
-The factors in question will first be analysed through principal component analysis(PCA) after they have been standardized through scaling and based on these observations we will examine the variables of interest against other variables that appear from the PCA, through logistic regression.
+The factors in question will first be analysed through principal component analysis(PCA) after they have been standardized through scaling.
 
 While the rate of foreign aid is a variable in the dataset and it is interesting to see how it affects the other variables, there are some significant problems with it which limit its use here to make any assumptions. While one might hypothesize that a larger amount of aid should lead to greater results and that if there is no correlation or even a negative correlation, one must conclude that foreign aid is ineffective. But the number in question is just the gross amount, it does not take into account how this money was used, what is the amount of corruption in the target country or other circumstances such as war and it necessarily does not include the resources used by NGO organisations. So while its use might provide some interesting insight, the conclusions with this data and its use should be treated with great care.
 
@@ -63,6 +63,7 @@ As one can see, some variables contain a high number of NA values, but the bigge
 Here are correlations of the variables:
 
 ```{r correlplot}
+#Removing incomplete rows and maikng a correlation matrix
 comp <- complete.cases(hdi.aid)
 hdi.aid2 <- hdi.aid
 hdi.aid2$comp <- comp
@@ -74,6 +75,7 @@ corrplot(cor(hdi.aid2[2:17]), type="upper")
 Now in this we can see that foreign aid correlates negatively with most things, except the fertility rate, which in this case means that the more a place has received foreign aid the higher the birth rate of women. Of course this follows, as the places that receive foreign aid usually need it. Also of interest is that the fertility rate is not very strongly correlated with GNI. To get this plot, the NA values had to be eliminated, which brings the amount of observations down. Let's see what the effect is if we remove the countries that do not receive aid from the dataset:
 
 ```{r correlaid}
+#Same thing again
 hdi.aid3 <- filter(hdi.aid2, mean04 != 0)
 corrplot(cor(hdi.aid3[2:17]), type="upper")
 ```

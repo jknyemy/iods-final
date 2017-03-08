@@ -14,7 +14,6 @@ library(GGally)
 library(FactoMineR)
 library(dplyr)
 hdi.aid <- read.csv2("hdi_aid.csv", stringsAsFactors = FALSE)
-str(hdi.aid)
 ```
 
 ## Principal component analysis
@@ -22,7 +21,7 @@ str(hdi.aid)
 So, to proceed with the analysis, principal component analysis calculates components, which cause the highest amount of variance in the variables which are under consideration.
 
 ```{r pca comp}
-
+# First we remove missing value rows and scale the dataset to standardize it.
 comp <- complete.cases(hdi.aid)
 hdi.aid2 <- hdi.aid
 hdi.aid2$comp <- comp
@@ -31,6 +30,7 @@ hdi.aid2 <- dplyr::select(hdi.aid2, -comp)
 names <- hdi.aid2$Country
 hdi.aid2 <- dplyr::select(hdi.aid2, -Country)
 hdiaid2_sc <- scale(hdi.aid2)
+#Then we proceed with pca and make a plot of it.
 pca_hdi <- prcomp(hdiaid2_sc)
 par(mar = rep(2, 4))
 plot(pca_hdi, main = "Principal component barplot")
@@ -40,6 +40,7 @@ pca_hdi
 From this we can see, that the first component explains most of the variance. Visualizing this with a biplot, where the axises are the first two components(x is PC1 and y is PC2), that is the components which cause the most variance in the variables, but where the first explains four times more than the second.
 
 ```{r pca,fig.width=24, fig.height=20}
+#Making a biplot
 biplot(pca_hdi, choices = 1:2, cex = c(2.5, 2.5), col = c("red", "blue"), xlabs = names)
 ```
 
