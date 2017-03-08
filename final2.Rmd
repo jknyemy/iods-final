@@ -33,7 +33,7 @@ hdi.aid2 <- dplyr::select(hdi.aid2, -Country)
 hdiaid2_sc <- scale(hdi.aid2)
 pca_hdi <- prcomp(hdiaid2_sc)
 par(mar = rep(2, 4))
-plot(pca_hdi)
+plot(pca_hdi, main = "Principal component barplot")
 pca_hdi
 ```
 
@@ -43,5 +43,7 @@ From this we can see, that the first component explains most of the variance. Vi
 biplot(pca_hdi, choices = 1:2, cex = c(2.5, 2.5), col = c("red", "blue"), xlabs = names)
 ```
 
+Judging by the weight given by the first component, most of the HDI variables correlate according to it. A second vertical line places child mortality, the length of foreign aid received, the ratio of women's labour participation to men and the ratio of estimated GNI by gender. Meanwhile, women's fertility and the mean of foreign aid received are somewhat close on the left side. GNI nd life expectancy are on the same position on this axis as well. On the second component axis, the mean of foreign aid, the length of it, ratio of life expectancy between genders and some variables relating to the ratio of education and the mean of education in general are somewhat close. The ratio of labour participation and estimated ratio of GNI are once again close.
 
+The countries themselves vary greatly along the axises, if one does not take into account the cluster in the centre of the visualization. But what one can infer from this biplot is that the countries on the left side, which group according to the first and stronger component are many fewer than the majority of the countries, which cluster a bit on the right side of the image. When one takes into consideration, that all countries depicted here are recipients of foreign aid, or were at least between 1984 and 2004 and taking into account that the length in years of aid received was quite heavily biased towards the maximum value and that the proportion of GNI received as foreign aid was very widely distributed, one can be cautiously optimistic about the situation as depicted by the data.
 
