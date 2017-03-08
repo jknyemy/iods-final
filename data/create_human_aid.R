@@ -52,7 +52,7 @@ hdi3_1 <- bind_cols(hdi3_1, transmute(hdi3, Labour.FM = Labour.F/Labour.M))
 str(hdi1)
 hdi.aid <- bind_cols(hdi2_1, hdi3_1)
 names(hdi1)[names(hdi1) == "HDI."] <- "HDI"
-hdi.aid <- select(hdi.aid, -Country)
+#hdi.aid <- select(hdi.aid, -Country)
 
 hdi.aid <- bind_cols(hdi1, hdi.aid)
 str(hdi.aid)
@@ -71,7 +71,7 @@ fert2014$Country <- as.character(fert2014$Country)
 fert2014$miss <- complete.cases(fert2014)
 fert2014_1 <- filter(fert2014, miss==TRUE)
 fert2014_1 <- select(fert2014_1, -miss)
-names(hdi.aid3)[names(hdi.aid3) == "X2014"] <- "Fert"
+names(fert2014_1)[names(fert2014_1) == "X2014"] <- "Fert"
 
 #Combining the data
 hdi.aid3 <- inner_join(hdi.aid2, fert2014_1, by = "Country")
@@ -120,7 +120,8 @@ str(child.mort)
 #Combining data
 
 hdi.aid5 <- inner_join(hdi.aid4, child.mort, by = "Country")
-View(hdi.aid5)
+str(hdi.aid5)
+
 
 #Saving the dataset
 

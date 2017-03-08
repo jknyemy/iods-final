@@ -7,8 +7,41 @@ output: html_document
 
 ```{r setup2, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, message = FALSE)
+library(ggplot2)
+library(MASS)
+library(corrplot)
+library(GGally)
+library(FactoMineR)
+library(dplyr)
+hdi.aid <- read.csv2("hdi_aid.csv", stringsAsFactors = FALSE)
 str(hdi.aid)
-rownames(hdi.aid) <- hdi.aid$Country
-hdi.aid <- select(hdi.aid, -Country)
 ```
+
+## Principal component analysis
+
+So, to proceed with the analysis, principal component analysis calculates components, which cause the highest amount of variance in the variables which are under consideration.
+
+```{r pca comp}
+
+comp <- complete.cases(hdi.aid)
+hdi.aid2 <- hdi.aid
+hdi.aid2$comp <- comp
+hdi.aid2 <- filter(hdi.aid, comp==TRUE)
+hdi.aid2 <- dplyr::select(hdi.aid2, -comp)
+names <- hdi.aid2$Country
+hdi.aid2 <- dplyr::select(hdi.aid2, -Country)
+hdiaid2_sc <- scale(hdi.aid2)
+pca_hdi <- prcomp(hdiaid2_sc)
+par(mar = rep(2, 4))
+plot(pca_hdi)
+pca_hdi
+```
+
+From this we can see, that the first component explains most of the variance. Visualizing this with a biplot, where the axises are the first two components(x is PC1 and y is PC2), that is the components which cause the most variance in the variables, but where the first explains four times more than the second.
+
+```{r pca,fig.width=24, fig.height=20}
+biplot(pca_hdi, choices = 1:2, cex = c(2.5, 2.5), col = c("red", "blue"), xlabs = names)
+```
+
+
 

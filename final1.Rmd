@@ -14,7 +14,7 @@ library(dplyr)
 hdi.aid <- read.csv2("hdi_aid.csv", stringsAsFactors = FALSE)
 ```
 
-# Hypothesis
+# Final assignment
 
 ## Dataset and variables
 
@@ -39,10 +39,10 @@ Here the upper values are for the aid received and the lower for the amount of y
 
 ## Hypothesis or purpose
 
-The purpose of this analysis is to compare the variables of the dataset to some variables of interest. The first of these variables is the HDI value and the fertility of women, summaries of which are here:
+The purpose of this analysis is to compare the variables of the dataset to some variables of interest. The first of these variables is the fertility of women and the HDI value, summaries of which are here:
 
 ```{r summary fert}
-summary(hdi.aid$fert)
+summary(hdi.aid$Fert)
 summary(hdi.aid$HDI)
 ```
 
@@ -63,5 +63,19 @@ As one can see, some variables contain a high number of NA values, but the bigge
 Here are correlations of the variables:
 
 ```{r correlplot}
-corrplot(cor(hdi.aid[3:17]), type="upper")
+comp <- complete.cases(hdi.aid)
+hdi.aid2 <- hdi.aid
+hdi.aid2$comp <- comp
+hdi.aid2 <- filter(hdi.aid, comp==TRUE)
+hdi.aid2 <- select(hdi.aid2, -comp)
+corrplot(cor(hdi.aid2[2:17]), type="upper")
 ```
+
+Now in this we can see that foreign aid correlates negatively with most things, except the fertility rate, which in this case means that the more a place has received foreign aid the higher the birth rate of women. Of course this follows, as the places that receive foreign aid usually need it. Also of interest is that the fertility rate is not very strongly correlated with GNI. To get this plot, the NA values had to be eliminated, which brings the amount of observations down. Let's see what the effect is if we remove the countries that do not receive aid from the dataset:
+
+```{r correlaid}
+hdi.aid3 <- filter(hdi.aid2, mean04 != 0)
+corrplot(cor(hdi.aid3[2:17]), type="upper")
+```
+
+And the result is actually the same, as the missing values were in countries which do not receive foreign aid.
