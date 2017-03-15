@@ -15,22 +15,42 @@ library(FactoMineR)
 library(dplyr)
 hdi.aid <- read.csv2("hdi_aid.csv", stringsAsFactors = FALSE)
 ```
+## Observing some correlations between variables of interest
 
-## Principal component analysis
+Here is a linear regression fit of the variables GNI and Fert, where we use GNI as an explanatory variable and Fert as the dependent one.
 
-So, to proceed with the analysis, principal component analysis calculates components, which cause the highest amount of variance in the variables which are under consideration.
-
-```{r pca comp}
-# First we remove missing value rows and scale the dataset to standardize it.
+```{r scatters}
+#Removing incomplete rows
 comp <- complete.cases(hdi.aid)
+hdi.aid$mean04[is.na(hdi.aid$mean04)] <- 0
 hdi.aid2 <- hdi.aid
 hdi.aid2$comp <- comp
 hdi.aid2 <- filter(hdi.aid, comp==TRUE)
 hdi.aid2 <- dplyr::select(hdi.aid2, -comp)
 names <- hdi.aid2$Country
 hdi.aid2 <- dplyr::select(hdi.aid2, -Country)
+#Converting HDI to a factor
+bins <- quantile(hdi.aid2$HDI)
+hdi_cat <- cut(hdi.aid2$HDI, breaks = bins, include.lowest = TRUE, label = c("low", "med_low", "med_high", "high"))
+hdi.aid22 <- hdi.aid2
+hdi.aid22$HDI <- hdi_cat
+ggplot(hdi.aid22,
+       aes(y = Fert, x = GNI, color=HDI, ylab="Birth rate")) +
+  geom_point()
+
+
+
+```
+
+The plot has HDI coloring to go with. Of interest is that the distribution shows, that high GNI, while mostly guaranteeing low birth rate of women is not a prerequisite for it and whil low GNI seems to correlate with high birth rate, this is far from predetermined by it and the same seems to hold for HDI values as well, where a high HDI value means low birth rate, but especially a medium low HDI value does not mean high birth rate.
+
+## Principal component analysis
+
+So, to proceed with the analysis, principal component analysis calculates components, which cause the highest amount of variance in the variables which are under consideration.
+
+```{r pca comp}
+#Caling the dataset. Then we proceed with pca and make a barplot of it.
 hdiaid2_sc <- scale(hdi.aid2)
-#Then we proceed with pca and make a plot of it.
 pca_hdi <- prcomp(hdiaid2_sc)
 par(mar = rep(2, 4))
 plot(pca_hdi, main = "Principal component barplot")

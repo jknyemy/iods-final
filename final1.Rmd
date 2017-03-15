@@ -52,32 +52,35 @@ While the rate of foreign aid is a variable in the dataset and it is interesting
 
 ## Basic characteristics of the dataset
 
-Here is a summary of the basic statistics of the dataset:
+Here is a summary of the basic statistics of the variables of the dataset:
 
 ```{r summaries}
 summary(hdi.aid[2:17])
 ```
+As one can see, some variables contain a high number of NA values, but the biggest amount, in mean04, which refers to the mean proportion of foreign aid, refers to countries which did not receive foreign aid at all. In other cases, it can affect the outcome, but not too much, especially for current purposes, which is to form some general idea of correlations.
 
-As one can see, some variables contain a high number of NA values, but the biggest amount, in mean04, which refers to the mean proportion of foreign aid, refers to countries which did not receive foreign aid at all. In other cases, it can affect the outcome but not too much, especially for current purposes, which is to form some general idea of correlations.
+```{r pairs, , fig.width=30, fig.height=24}
+#Removing incomplete rows and making a general picture of the dataset
+comp <- complete.cases(hdi.aid)
+hdi.aid$mean04[is.na(hdi.aid$mean04)] <- 0
+hdi.aid2 <- hdi.aid
+hdi.aid2$comp <- comp
+hdi.aid2 <- filter(hdi.aid, comp==TRUE)
+hdi.aid2 <- select(hdi.aid2, -comp)
+hdi.aid21 <- select(hdi.aid2, -Country)
+ggpairs(hdi.aid21)
+```
+
+From the distributions one can observe several clear correlations and some geometrical distributions as well as scatterplots which have no strong combining values. All in all, they are very varied.
+
 
 Here are correlations of the variables:
 
 ```{r correlplot}
 #Removing incomplete rows and maikng a correlation matrix
-comp <- complete.cases(hdi.aid)
-hdi.aid2 <- hdi.aid
-hdi.aid2$comp <- comp
-hdi.aid2 <- filter(hdi.aid, comp==TRUE)
-hdi.aid2 <- select(hdi.aid2, -comp)
+
 corrplot(cor(hdi.aid2[2:17]), type="upper")
 ```
 
-Now in this we can see that foreign aid correlates negatively with most things, except the fertility rate, which in this case means that the more a place has received foreign aid the higher the birth rate of women. Of course this follows, as the places that receive foreign aid usually need it. Also of interest is that the fertility rate is not very strongly correlated with GNI. To get this plot, the NA values had to be eliminated, which brings the amount of observations down. Let's see what the effect is if we remove the countries that do not receive aid from the dataset:
+Now in this we can see that foreign aid correlates negatively with most things, except the fertility rate, which in this case means that the more a place has received foreign aid the higher the birth rate of women. Of course this follows, as the places that receive foreign aid usually need it. Also of interest is that the fertility rate is not very strongly correlated with GNI. To get this plot, the NA values had to be eliminated, which brings the amount of observations down. This removed the countries which do not receive aid from the data as well.
 
-```{r correlaid}
-#Same thing again
-hdi.aid3 <- filter(hdi.aid2, mean04 != 0)
-corrplot(cor(hdi.aid3[2:17]), type="upper")
-```
-
-And the result is actually the same, as the missing values were in countries which do not receive foreign aid.
